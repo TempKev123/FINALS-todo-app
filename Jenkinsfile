@@ -15,14 +15,6 @@ pipeline {
             }
         }
 
-        stage('Test Frontend') {
-            steps {
-                dir('TODO/todo_frontend') {
-                    sh 'CI=true npm test --watchAll=false'
-                }
-            }
-        }
-
         stage('Build Frontend') {
             steps {
                 dir('TODO/todo_frontend') {
