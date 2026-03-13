@@ -21,8 +21,8 @@ RUN npm install --production
 COPY TODO/todo_backend .
 
 # Copy React build to backend
-COPY --from=frontend /app/frontend/build ./build
+COPY --from=frontend /app/frontend/build ./static/build
 
 EXPOSE 5000
 
-CMD ["node", "index.js"]
+CMD ["node", "server.js"]
