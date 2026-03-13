@@ -1,6 +1,8 @@
 # MERN TODO List App
 *Forked from [AtharvaKulkarniIT](https://github.com/AtharvaKulkarniIT/mern-todo-app)*
 
+currently used for Finals of EAD 2/2025 of Sujit Dityam 6511800
+
 This is a TODO List application built using the MERN stack. 
 
 ## Prerequisites
