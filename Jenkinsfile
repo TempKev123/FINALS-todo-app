@@ -47,12 +47,10 @@ pipeline {
         }
 
         stage('Containerize Application') {
-            steps {
-                dir('TODO/todo_backend') {
-                    sh "docker build -t ${IMAGE_NAME}:latest ."
-                }
-            }
-        }
+    steps {
+        sh "docker build -t ${IMAGE_NAME}:latest ."
+    }
+}
 
         stage('Push Image') {
             steps {

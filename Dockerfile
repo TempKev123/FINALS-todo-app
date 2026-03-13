@@ -23,6 +23,6 @@ COPY TODO/todo_backend .
 # Copy React build to backend
 COPY --from=frontend /app/frontend/build ./build
 
-EXPOSE 3000
+EXPOSE 5000
 
 CMD ["node", "index.js"]
