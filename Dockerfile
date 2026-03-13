@@ -1,22 +1,28 @@
-# syntax=docker/dockerfile:1
-FROM node:18-alpine
+# ---------- Build React ----------
+FROM node:18 AS frontend
 
-# Install build dependencies for native modules like sqlite3
-RUN apk add --no-cache python3 g++ make
+WORKDIR /app/frontend
+
+COPY TODO/todo_frontend/package*.json ./
+RUN npm install
+
+COPY TODO/todo_frontend .
+RUN npm run build
+
+
+# ---------- Backend ----------
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy dependency files first (better Docker caching)
-COPY package*.json ./
+COPY TODO/todo_backend/package*.json ./
+RUN npm install --production
 
-# Install production dependencies
-RUN npm install --omit=dev
+COPY TODO/todo_backend .
 
-# Copy the rest of the application
-COPY . .
+# Copy React build to backend
+COPY --from=frontend /app/frontend/build ./build
 
-# Expose the app port
-EXPOSE 5000
+EXPOSE 3000
 
-# Start the application
 CMD ["node", "index.js"]

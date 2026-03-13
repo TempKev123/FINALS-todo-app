@@ -7,12 +7,25 @@ pipeline {
 
     stages {
 
+        stage('Install Frontend Dependencies') {
+            steps {
+                dir('TODO/todo_frontend') {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Test Frontend') {
+            steps {
+                dir('TODO/todo_frontend') {
+                    sh 'CI=true npm test --watchAll=false'
+                }
+            }
+        }
+
         stage('Build Frontend') {
             steps {
-                echo 'Building React frontend...'
-
-                dir('todo_frontend') {
-                    sh 'npm install'
+                dir('TODO/todo_frontend') {
                     sh 'npm run build'
                 }
             }
@@ -20,16 +33,14 @@ pipeline {
 
         stage('Prepare Backend') {
             steps {
-                echo 'Copy frontend build into backend...'
-
-                sh 'rm -rf todo_backend/build'
-                sh 'cp -r todo_frontend/build todo_backend/'
+                sh 'rm -rf TODO/todo_backend/build'
+                sh 'cp -r TODO/todo_frontend/build TODO/todo_backend/'
             }
         }
 
         stage('Install Backend Dependencies') {
             steps {
-                dir('todo_backend') {
+                dir('TODO/todo_backend') {
                     sh 'npm install'
                 }
             }
@@ -37,7 +48,7 @@ pipeline {
 
         stage('Test Backend') {
             steps {
-                dir('todo_backend') {
+                dir('TODO/todo_backend') {
                     sh 'npm test || true'
                 }
             }
@@ -45,13 +56,13 @@ pipeline {
 
         stage('Containerize Application') {
             steps {
-                dir('todo_backend') {
+                dir('TODO/todo_backend') {
                     sh "docker build -t ${IMAGE_NAME}:latest ."
                 }
             }
         }
 
-        stage('Push') {
+        stage('Push Image') {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-creds',
