@@ -9,6 +9,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the application...'
+                cd 'todo_frontend'
 
                 // Install dependencies
                 sh 'npm install'
