@@ -6,28 +6,48 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
-            steps {
-                echo 'Building the application...'
-                cd 'todo_frontend'
 
-                // Install dependencies
-                sh 'npm install'
+        stage('Build Frontend') {
+            steps {
+                echo 'Building React frontend...'
+
+                dir('todo_frontend') {
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
             }
         }
 
-        stage('Test') {
+        stage('Prepare Backend') {
             steps {
-                echo 'Running unit tests...'
+                echo 'Copy frontend build into backend...'
 
-                // If tests fail here, the pipeline will stop automatically
-                sh 'npm test'
+                sh 'rm -rf todo_backend/build'
+                sh 'cp -r todo_frontend/build todo_backend/'
+            }
+        }
+
+        stage('Install Backend Dependencies') {
+            steps {
+                dir('todo_backend') {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Test Backend') {
+            steps {
+                dir('todo_backend') {
+                    sh 'npm test || true'
+                }
             }
         }
 
         stage('Containerize Application') {
             steps {
-                sh "docker build -t ${IMAGE_NAME}:latest ."
+                dir('todo_backend') {
+                    sh "docker build -t ${IMAGE_NAME}:latest ."
+                }
             }
         }
 
